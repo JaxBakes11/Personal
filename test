@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <string.h>
+
+int main(int argc, char *argv[]) {
+    FILE *srcFile, *outFile;
+    char name[100][50];   
+    int age[100];     
+    float wage[100];    
+    char temp[50];         
+    int count = 0;
+
+
+    srcFile = fopen(argv[1], "r");
+    if (srcFile == NULL) {
+        perror("File opening failed!");
+        return 1;
+    }
+
+    printf("File '%s' opened successfully.\n\n", argv[1]);
+
+
+    while (fscanf(srcFile, "%49s %d %f", temp, &age[count], &wage[count]) == 3 && count < 100) {
+        strncpy(name[count], temp, 49);
+        name[count][49] = '\0'; 
+        count++;
+    }
+
+    fclose(srcFile);
+
+
+    outFile = fopen("output.csv", "w");
+    if (outFile == NULL) {
+        perror("Could not create output.csv");
+        return 1;
+    }
+
+    for (int i = 0; i < count; i++) {
+        fprintf(outFile, "%s,%d,%.2f\n", name[i], age[i], wage[i]);
+    }
+
+    fclose(outFile);
+
+    printf("Data written to output.csv successfully. %d records processed.\n", count);
+
+    return 0;
+}
